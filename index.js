@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var Player = require('./static/assets/js/game.js').Player;
 //SET UP STATIC ASSETS FOLDER
 app.use(express.static(__dirname + '/static'));
 
@@ -23,9 +22,8 @@ io.on('connection',function(socket) {
   // console.log(socket.conn.id);
   //put new player into table
 
-  var newPlayer = new Player(null,null);
-  newPlayer.id = socket.conn.id;
-  players[socket.conn.id] = newPlayer;
+
+  players[socket.conn.id] = {x:null,y:null};
 
   socket.emit('init');
   console.log(socket.conn.id + " initialized");
@@ -39,8 +37,8 @@ io.on('connection',function(socket) {
 
   socket.on('update position',function(x,y) {
     console.log("update position being called");
-    players[socket.conn.id].setX(x);
-    players[socket.conn.id].setY(y);
+    players[socket.conn.id].x = x;
+    players[socket.conn.id].y = y;
 
     io.emit('clear');
     for (var id in players) {
@@ -51,17 +49,14 @@ io.on('connection',function(socket) {
 
   socket.on('disconnect',function() {
     //remove user from table
-    //TODO: redraw without this player!
     delete players[socket.conn.id];
-    
+
     io.emit('clear');
     for (var id in players) {
       existingPlayer = players[id];
       io.emit('draw player',{x:existingPlayer.x,y:existingPlayer.y});
     }
-
   });
-
 
 });
 
