@@ -1,97 +1,110 @@
-
 //Create Socket
 var socket = io();
-var canvas = $('#battleground')[0]
+var canvas;
+var ctx;
 var PLAYER_RADIUS = 20;
-var MOVEMENT_SPEED = 5;
+var MOVEMENT_SPEED = 10;
 var player;
+var keys;
+var remotePlayers = {};
 
-setEventHandlers();
-//=============================On Event Received ===============================
-
-socket.on('draw player',function(player) {
-  // console.log($('#battleground') + ": " + color)
-  // console.log("draw player being called");
-  // console.log(player.x,player.y);
-  if(player.x != null && player.y != null) {
-    draw(player.x,player.y);
-  }
-});
-
-
-
-socket.on('init',function() {
+function init() {
+  canvas = $('#battleground')[0]
+  ctx = canvas.getContext('2d');
+  keys = new Keys();
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  var x = Math.random() * (canvas.width - PLAYER_RADIUS);
-  var y = Math.random() * (canvas.height - PLAYER_RADIUS);
-  player = {x:x,y:y};
-  // console.log(x,y);
-  socket.emit('update position', x,y);
-});
 
-socket.on('clear',function() {
-  // console.log("clear being called");
-  clear();
-})
+  player = new Player(Math.random()*canvas.width,Math.random()*canvas.height);
 
-//==============================Sending Events ================================
+  setEventHandlers();
 
-
-//==============================Auxiliary Functions===========================
-
-function draw(x,y) {
-  var ctx = canvas.getContext('2d');
-  ctx.beginPath();
-  ctx.arc(x,y,PLAYER_RADIUS,0,Math.PI * 2)
-  ctx.fillStyle = "#00aa8f"
-  ctx.fill();
-}
-
-function clear() {
-  var ctx = canvas.getContext('2d');
-  ctx.fillStyle = "gray";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
 function setEventHandlers() {
-  console.log("setEventHandlers");
-  window.addEventListener("keydown",function(key) {
-    switch (key.code) {
-      case "KeyA":
-        //left
-        player.x -= MOVEMENT_SPEED;
-        break;
-      case "KeyW":
-        //up
-        player.y -= MOVEMENT_SPEED;
-        break;
-      case "KeyS":
-        //down
-        player.y += MOVEMENT_SPEED;
-        break;
-      case "KeyD":
-        //right
-        player.x += MOVEMENT_SPEED;
-        break;
-    }
-    socket.emit('update position',player.x,player.y);
-  });
+  window.addEventListener("keydown",onKeyDown);
+  window.addEventListener("keyup",onKeyUp);
 
-  window.addEventListener("keyup",function(key) {
-    switch (key.code) {
-      case "KeyA":
-        //left
-        break;
-      case "KeyW":
-        //up
-        break;
-      case "KeyS":
-        //down
-        break;
-      case "KeyD":
-        //right
-        break;
-    }
-  });
+  window.addEventListener("resize",onResize);
+
+
+  //Socket event handlers
+  socket.on('connected',onSocketConnected);
+  socket.on('disconnect',onSocketDisconnect);
+  socket.on('new player',onNewPlayer);
+  socket.on('move player',onMovePlayer);
+  socket.on('remove player',onRemovePlayer);
+
+}
+
+function onKeyDown(key) {
+  if(player) {
+    keys.onKeyDown(key);
+  };
+}
+
+function onKeyUp(key) {
+  if(player) {
+    keys.onKeyUp(key);
+  }
+}
+
+function onResize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function onSocketConnected() {
+  console.log("Socket Connected");
+  socket.emit('new player',{x:player.x,y:player.y});
+}
+
+function onSocketDisconnect() {
+  console.log("Socket disconnected");
+}
+
+function onNewPlayer(data) {
+  //add new player to remote players list
+  remotePlayers[data.id] = new Player(data.x,data.y);
+}
+
+function onMovePlayer(data) {
+  //move player with the appropriate id according to their new location
+  var movingPlayer = remotePlayers[data.id];
+  if(movingPlayer) {
+    movingPlayer.x = data.x;
+    movingPlayer.y = data.y;
+  }
+}
+
+function onRemovePlayer(data) {
+  var removedPlayer = remotePlayers[data.id];
+  if(removedPlayer) {
+    delete remotePlayers[data.id];
+  }
+}
+
+function animate() {
+  update();
+  draw();
+
+  window.requestAnimFrame(animate);
+}
+
+function update() {
+  console.log(player);
+  player.update(keys);
+}
+
+function draw() {
+  clear();
+  player.draw(ctx);
+  for (var i in remotePlayers) {
+    remotePlayers[i].draw(ctx);
+  }
+}
+
+function clear() {
+  ctx.fillStyle = "gray";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 }

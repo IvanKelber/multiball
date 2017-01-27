@@ -17,50 +17,44 @@ var players = {};
 
 //When a client connects
 io.on('connection',function(socket) {
-  // console.log("a user connected");
-  //
-  // console.log(socket.conn.id);
-  //put new player into table
 
-
-  players[socket.conn.id] = {x:null,y:null};
-
-  socket.emit('init');
-  console.log(socket.conn.id + " initialized");
-
-  // io.emit('draw player',{x:newPlayer.getX(),y:newPlayer.getY()}); //let other client know this player exists
-  //
-  // for (var id in players) {
-  //   var existingPlayer = players[id];
-  //   socket.emit('draw player',{x:existingPlayer.getX(),y:existingPlayer.getY()});
-  // }
-
-  socket.on('update position',function(x,y) {
-    console.log("update position being called");
-    players[socket.conn.id].x = x;
-    players[socket.conn.id].y = y;
-
-    io.emit('clear');
-    for (var id in players) {
-      existingPlayer = players[id];
-      io.emit('draw player',{x:existingPlayer.x,y:existingPlayer.y});
-    }
-  });
-
-  socket.on('disconnect',function() {
-    //remove user from table
-    delete players[socket.conn.id];
-
-    io.emit('clear');
-    for (var id in players) {
-      existingPlayer = players[id];
-      io.emit('draw player',{x:existingPlayer.x,y:existingPlayer.y});
-    }
-  });
+  socket.on('new player',onNewPlayer);
+  socket.on('move player',onMovePlayer);
+  socket.on('remove player',onRemovePlayer);
+  socket.on('disconnect',onDisconnect);
 
 });
 
-// When the server disconnects...?
-io.on('disconnect',function(socket) {
-  console.log("SERVER DISCONNECTED");
-});
+function onNewPlayer(data) {
+  this.broadcast.emit('new player',{x:data.x,y:data.y,id:this.conn.id});
+  for(var id in players) {
+    var p = player[id];
+    this.emit('new player',{x:p.x,y:p.y,id:id});
+  }
+  players[this.conn.id] = new Player(data.x,data.y);
+}
+
+function onMovePlayer(data) {
+  var p = players[data.id];
+  if(p) {
+    p.x = data.x;
+    p.y = data.y;
+
+    io.emit('move player',data);
+  }
+
+}
+
+function onRemovePlayer(data) {
+  var p = players[data.id];
+  if(p) {
+    delete players[data.id];
+    io.emit('remove player',data);
+  }
+
+}
+
+function onDisconnect() {
+  //remove user from table
+  delete players[this.conn.id];
+}
