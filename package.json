@@ -1,0 +1,8 @@
+{
+  "name": "MultiBall",
+  "version": "0.0.1",
+  "description": "Multiple Player Ball Control",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
