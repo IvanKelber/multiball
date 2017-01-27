@@ -22,20 +22,44 @@ io.on('connection',function(socket) {
   //
   // console.log(socket.conn.id);
   //put new player into table
-  var startX = Math.random()*45;
-  var startY = Math.random()*100;
-  var newPlayer =  new Player(startX,startY);
+
+  var newPlayer = new Player(null,null);
   newPlayer.id = socket.conn.id;
   players[socket.conn.id] = newPlayer;
 
-  io.emit('new client',{x:newPlayer.getX(),y:newPlayer.getY()}); //let other client know this player exists
-  for (var id in players) {
-    var player = players[id];
-    socket.emit('new client',{x:player.getX(),y:player.getY()});
-  }
+  socket.emit('init');
+  console.log(socket.conn.id + " initialized");
+
+  // io.emit('draw player',{x:newPlayer.getX(),y:newPlayer.getY()}); //let other client know this player exists
+  //
+  // for (var id in players) {
+  //   var existingPlayer = players[id];
+  //   socket.emit('draw player',{x:existingPlayer.getX(),y:existingPlayer.getY()});
+  // }
+
+  socket.on('update position',function(x,y) {
+    console.log("update position being called");
+    players[socket.conn.id].setX(x);
+    players[socket.conn.id].setY(y);
+
+    io.emit('clear');
+    for (var id in players) {
+      existingPlayer = players[id];
+      io.emit('draw player',{x:existingPlayer.x,y:existingPlayer.y});
+    }
+  });
+
   socket.on('disconnect',function() {
     //remove user from table
+    //TODO: redraw without this player!
     delete players[socket.conn.id];
+    
+    io.emit('clear');
+    for (var id in players) {
+      existingPlayer = players[id];
+      io.emit('draw player',{x:existingPlayer.x,y:existingPlayer.y});
+    }
+
   });
 
 
