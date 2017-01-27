@@ -23,7 +23,7 @@ io.on('connection',function(socket) {
   // console.log(socket.conn.id);
   //put user into table
   users[socket.conn.id] = [0,0];
-
+  io.emit('update color',"red");
   socket.on('disconnect',function() {
     //remove user from table
     delete users[socket.conn.id];
