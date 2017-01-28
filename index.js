@@ -3,6 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var Player = require('./Player').Player;
+var port = process.env.PORT || 8000
 //SET UP STATIC ASSETS FOLDER
 app.use(express.static(__dirname + '/static'));
 
@@ -10,8 +11,8 @@ app.use(express.static(__dirname + '/static'));
 app.get('/', function(req,res) {
   res.sendFile(__dirname + "/index.html");
 });
-http.listen(8000,function() {
-  console.log("Listening on 8000");
+http.listen(port,function() {
+  console.log("Listening on ",port);
 });
 
 var players = {};
