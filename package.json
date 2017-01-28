@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Multiple Player Ball Control",
   "license": "MIT",
+  "engines" : {
+    "node" : "7.2.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/IvanKelber/multiball.git"
