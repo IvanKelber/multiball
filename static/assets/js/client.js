@@ -55,8 +55,8 @@ function onResize() {
   canvas.height = window.innerHeight;
 }
 
-function onInit() {
-  console.log("init")
+function onInit(id) {
+  player.id = id;
   socket.emit('new player',{x:player.getX(),y:player.getY()});
 }
 
@@ -71,18 +71,21 @@ function onSocketDisconnect() {
 
 function onNewPlayer(data) {
   //add new player to remote players list
-  console.log("on new player");
   remotePlayers[data.id] = new Player(data.x,data.y);
-  console.log(data.id,data.x,data.y);
   remotePlayers[data.id].id = data.id;
 }
 
 function onMovePlayer(data) {
   //move player with the appropriate id according to their new location
-  var movingPlayer = remotePlayers[data.id];
-  if(movingPlayer) {
-    movingPlayer.setX(data.x);
-    movingPlayer.setY(data.y);
+  if(remotePlayers[data.id]) {
+    console.log("first")
+    console.log(data.id,data.x,data.y)
+    // remotePlayers[data.id].setX(data.x);
+    // remotePlayers[data.id].setY(data.y);
+    remotePlayers[data.id] = new Player(data.x,data.y);
+    remotePlayers[data.id].id = data.id;
+    console.log("second")
+    console.log(data.id,remotePlayers[data.id].getX(),remotePlayers[data.id].getY());
   }
 }
 
@@ -102,7 +105,9 @@ function animate() {
 
 function update() {
   // console.log(remotePlayers);
-  player.update(keys);
+  if(player.update(keys)) {
+    socket.emit('move player',{x:player.getX(),y:player.getY(),id:player.id})
+  };
 }
 
 function draw() {
