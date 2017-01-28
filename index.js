@@ -31,7 +31,7 @@ function onNewPlayer(data) {
   this.broadcast.emit('new player',{x:data.x,y:data.y,id:this.conn.id});
   for(var id in players) {
     var p = players[id];
-    this.emit('new player',{x:p.x,y:p.y,id:id});
+    this.emit('new player',{x:p.getX(),y:p.getY(),id:id});
   }
   players[this.conn.id] = new Player(data.x,data.y)
 }
@@ -39,10 +39,10 @@ function onNewPlayer(data) {
 function onMovePlayer(data) {
   var p = players[data.id];
   if(p) {
-    p.x = data.x;
-    p.y = data.y;
+    p.setX(data.x);
+    p.setY(data.y);
 
-    io.emit('move player',data);
+    io.emit('move player',{x:data.x,y:data.y,id:data.id});
   }
 
 }
@@ -51,7 +51,7 @@ function onRemovePlayer(data) {
   var p = players[data.id];
   if(p) {
     delete players[data.id];
-    io.emit('remove player',data);
+    io.emit('remove player',{x:data.x,y:data.y,id:data.id});
   }
 
 }
@@ -62,7 +62,8 @@ function onDisconnect() {
 }
 
 setInterval(function() {
+  console.log("===========");
   for (var id in players) {
     console.log(id);
   }
-},5000);
+},50000);

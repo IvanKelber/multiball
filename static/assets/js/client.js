@@ -3,7 +3,7 @@ var socket = io();
 var canvas;
 var ctx;
 var PLAYER_RADIUS = 20;
-var MOVEMENT_SPEED = 10;
+var MOVEMENT_SPEED = 4;
 var player;
 var keys;
 var remotePlayers = {};
@@ -56,12 +56,13 @@ function onResize() {
 }
 
 function onInit() {
-  socket.emit('new player',{x:player.x,y:player.y});
+  console.log("init")
+  socket.emit('new player',{x:player.getX(),y:player.getY()});
 }
 
 function onSocketConnected() {
   console.log("Socket Connected");
-  socket.emit('new player',{x:player.x,y:player.y});
+  socket.emit('new player',{x:player.getX(),y:player.getY()});
 }
 
 function onSocketDisconnect() {
@@ -70,15 +71,18 @@ function onSocketDisconnect() {
 
 function onNewPlayer(data) {
   //add new player to remote players list
+  console.log("on new player");
   remotePlayers[data.id] = new Player(data.x,data.y);
+  console.log(data.id,data.x,data.y);
+  remotePlayers[data.id].id = data.id;
 }
 
 function onMovePlayer(data) {
   //move player with the appropriate id according to their new location
   var movingPlayer = remotePlayers[data.id];
   if(movingPlayer) {
-    movingPlayer.x = data.x;
-    movingPlayer.y = data.y;
+    movingPlayer.setX(data.x);
+    movingPlayer.setY(data.y);
   }
 }
 
@@ -97,13 +101,15 @@ function animate() {
 }
 
 function update() {
-  console.log(player);
+  // console.log(remotePlayers);
   player.update(keys);
 }
 
 function draw() {
   clear();
+  // console.log("PLAYER:");
   player.draw(ctx);
+  // console.log("REMOTE PLAYERS");
   for (var i in remotePlayers) {
     remotePlayers[i].draw(ctx);
   }
