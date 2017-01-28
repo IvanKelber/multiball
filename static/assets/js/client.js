@@ -108,10 +108,10 @@ function update() {
 function draw() {
   clear();
   // console.log("PLAYER:");
-  player.draw(ctx);
+  player.draw(ctx,"#aa0000");
   // console.log("REMOTE PLAYERS");
   for (var i in remotePlayers) {
-    remotePlayers[i].draw(ctx);
+    remotePlayers[i].draw(ctx,"#00aaaa");
   }
 }
 
