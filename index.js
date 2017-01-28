@@ -22,8 +22,7 @@ io.on('connection',function(socket) {
 
   socket.on('new player',onNewPlayer);
   socket.on('move player',onMovePlayer);
-  socket.on('remove player',onRemovePlayer);
-  socket.on('disconnect',onDisconnect);
+  socket.on('disconnect',onRemovePlayer);
 
 });
 
@@ -47,13 +46,12 @@ function onMovePlayer(data) {
 
 }
 
-function onRemovePlayer(data) {
-  var p = players[data.id];
+function onRemovePlayer() {
+  var p = players[this.conn.id];
   if(p) {
-    delete players[data.id];
-    io.emit('remove player',{x:data.x,y:data.y,id:data.id});
+    delete players[this.conn.id];
+    this.broadcast.emit('remove player',{id:this.conn.id});
   }
-
 }
 
 function onDisconnect() {

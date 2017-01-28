@@ -78,14 +78,9 @@ function onNewPlayer(data) {
 function onMovePlayer(data) {
   //move player with the appropriate id according to their new location
   if(remotePlayers[data.id]) {
-    console.log("first")
-    console.log(data.id,data.x,data.y)
-    // remotePlayers[data.id].setX(data.x);
-    // remotePlayers[data.id].setY(data.y);
+
     remotePlayers[data.id] = new Player(data.x,data.y);
     remotePlayers[data.id].id = data.id;
-    console.log("second")
-    console.log(data.id,remotePlayers[data.id].getX(),remotePlayers[data.id].getY());
   }
 }
 
