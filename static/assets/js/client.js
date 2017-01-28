@@ -29,6 +29,7 @@ function setEventHandlers() {
 
 
   //Socket event handlers
+  socket.on('init',onInit);
   socket.on('connected',onSocketConnected);
   socket.on('disconnect',onSocketDisconnect);
   socket.on('new player',onNewPlayer);
@@ -52,6 +53,10 @@ function onKeyUp(key) {
 function onResize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+}
+
+function onInit() {
+  socket.emit('new player',{x:player.x,y:player.y});
 }
 
 function onSocketConnected() {

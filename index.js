@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var Player = require('./Player').Player;
 //SET UP STATIC ASSETS FOLDER
 app.use(express.static(__dirname + '/static'));
 
@@ -17,6 +18,7 @@ var players = {};
 
 //When a client connects
 io.on('connection',function(socket) {
+  socket.emit('init');
 
   socket.on('new player',onNewPlayer);
   socket.on('move player',onMovePlayer);
@@ -28,10 +30,10 @@ io.on('connection',function(socket) {
 function onNewPlayer(data) {
   this.broadcast.emit('new player',{x:data.x,y:data.y,id:this.conn.id});
   for(var id in players) {
-    var p = player[id];
+    var p = players[id];
     this.emit('new player',{x:p.x,y:p.y,id:id});
   }
-  players[this.conn.id] = new Player(data.x,data.y);
+  players[this.conn.id] = new Player(data.x,data.y)
 }
 
 function onMovePlayer(data) {
@@ -58,3 +60,9 @@ function onDisconnect() {
   //remove user from table
   delete players[this.conn.id];
 }
+
+setInterval(function() {
+  for (var id in players) {
+    console.log(id);
+  }
+},5000);
