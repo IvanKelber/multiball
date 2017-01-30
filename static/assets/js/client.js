@@ -110,6 +110,8 @@ function draw() {
   clear();
   // console.log("PLAYER:");
   player.draw(ctx,"#aa0000");
+  ctx.font = "30px Arial"
+  ctx.strokeText(player.id,10,10);
   // console.log("REMOTE PLAYERS");
   for (var i in remotePlayers) {
     remotePlayers[i].draw(ctx,"#00aaaa");
