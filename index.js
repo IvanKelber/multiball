@@ -20,7 +20,7 @@ var players = {};
 //When a client connects
 io.on('connection',function(socket) {
   socket.emit('init',socket.conn.id);
-
+  console.log(socket.conn.id);
   socket.on('new player',onNewPlayer);
   socket.on('move player',onMovePlayer);
   socket.on('disconnect',onRemovePlayer);

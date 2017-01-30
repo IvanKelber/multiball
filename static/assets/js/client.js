@@ -57,6 +57,7 @@ function onResize() {
 
 function onInit(id) {
   player.id = id;
+  $('#connection').text($('#connection').text() + ": " + player.id);
   socket.emit('new player',{x:player.getX(),y:player.getY()});
 }
 
