@@ -127,6 +127,9 @@ function draw() {
   if(connect_word && !controller_id) {
     ctx.font = "30px Arial"
     ctx.fillText(connect_word,10,25);
+  } else {
+    ctx.fillStyle = "#41ff33"
+    ctx.fillText("Connected!",10,25);
   }
   for (var i in remotePlayers) {
     remotePlayers[i].draw(ctx,"#00aaaa");
