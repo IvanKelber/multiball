@@ -23,7 +23,7 @@ var wordToId = {};
 io.on('connection',function(socket) {
   socket.emit('init',{id:socket.conn.id});
 
-  readFile("./static/assets/data/english_words.txt",function(text) {
+  readFile(__dirname + "/static/assets/data/english_words.txt",function(text) {
     var lines = text.split('\n');
     var word = lines[Math.floor(Math.random()*lines.length)];
     wordToId[word] = socket.conn.id;
