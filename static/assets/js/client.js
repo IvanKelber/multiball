@@ -8,7 +8,7 @@ var player;
 var keys;
 var remotePlayers = {};
 var connect_word = "";
-
+var contoller_id;
 
 function init() {
   canvas = $('#battleground')[0]
@@ -98,6 +98,7 @@ function onRemovePlayer(data) {
 
 function onNewController(data) {
   console.log("New controller: " + data.id);
+  controller_id = data.id;
 }
 
 function onWordDecided(word) {
@@ -123,7 +124,7 @@ function draw() {
   clear();
   // console.log("PLAYER:");
   player.draw(ctx,"#aa0000");
-  if(connect_word) {
+  if(connect_word && !controller_id) {
     ctx.font = "30px Arial"
     ctx.fillText(connect_word,10,25);
   }
