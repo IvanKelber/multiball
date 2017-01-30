@@ -60,7 +60,7 @@ function onNewController(data) {
   console.log("ON NEW CONTROLLER", data.client_id);
   if(data.client_id in players) {
     console.log("client id exists");
-    io.sockets.socket(data.client_id).emit('new controller',{id:this.conn.id});
+    io.to.(data.client_id).emit('new controller',{id:this.conn.id});
   }
 }
 
