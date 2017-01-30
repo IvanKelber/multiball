@@ -7,6 +7,8 @@ var MOVEMENT_SPEED = 4;
 var player;
 var keys;
 var remotePlayers = {};
+var connect_word = "";
+
 
 function init() {
   canvas = $('#battleground')[0]
@@ -36,6 +38,7 @@ function setEventHandlers() {
   socket.on('move player',onMovePlayer);
   socket.on('remove player',onRemovePlayer);
   socket.on('new controller',onNewController);
+  socket.on('word decided',onWordDecided);
 
 }
 
@@ -97,6 +100,11 @@ function onNewController(data) {
   console.log("New controller: " + data.id);
 }
 
+function onWordDecided(word) {
+  console.log(word);
+  connect_word = word;
+}
+
 function animate() {
   update();
   draw();
@@ -115,8 +123,10 @@ function draw() {
   clear();
   // console.log("PLAYER:");
   player.draw(ctx,"#aa0000");
-  ctx.font = "30px Arial"
-  ctx.fillText(player.id,10,25);
+  if(connect_word) {
+    ctx.font = "30px Arial"
+    ctx.fillText(connect_word,10,25);
+  }
   // console.log("REMOTE PLAYERS");
   for (var i in remotePlayers) {
     remotePlayers[i].draw(ctx,"#00aaaa");

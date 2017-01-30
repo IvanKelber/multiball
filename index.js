@@ -1,3 +1,4 @@
+var fs = require('fs');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -16,10 +17,19 @@ http.listen(port,function() {
 });
 
 var players = {};
+var wordToId = {};
 
 //When a client connects
 io.on('connection',function(socket) {
-  socket.emit('init',socket.conn.id);
+  socket.emit('init',{id:socket.conn.id});
+
+  readFile("./static/assets/data/english_words.txt",function(text) {
+    var lines = text.split('\n');
+    var word = lines[Math.floor(Math.random()*lines.length)];
+    wordToId[word] = socket.conn.id;
+    socket.emit('word decided',word);
+  });
+
   console.log(socket.conn.id);
   socket.on('new player',onNewPlayer);
   socket.on('move player',onMovePlayer);
@@ -30,11 +40,12 @@ io.on('connection',function(socket) {
 
 function onNewPlayer(data) {
   this.broadcast.emit('new player',{x:data.x,y:data.y,id:this.conn.id});
+
   for(var id in players) {
     var p = players[id];
     this.emit('new player',{x:p.getX(),y:p.getY(),id:id});
   }
-  players[this.conn.id] = new Player(data.x,data.y)
+  players[this.conn.id] = new Player(data.x,data.y);
 }
 
 function onMovePlayer(data) {
@@ -54,6 +65,11 @@ function onRemovePlayer() {
     delete players[this.conn.id];
     this.broadcast.emit('remove player',{id:this.conn.id});
   }
+  for (word in wordToId) {
+    if (wordToId[word] === this.conn.id) {
+      delete wordToId[word];
+    }
+  }
 }
 
 function onNewController(data) {
@@ -64,9 +80,18 @@ function onNewController(data) {
   }
 }
 
+function readFile(file, callback) {
+  fs.readFile(file,"utf-8",function(err,data) {
+    if(err) {
+      console.log("Error while reading file " + file +": " + err);
+    };
+    callback(data);
+  });
+}
+
 setInterval(function() {
   console.log("===========");
   for (var id in players) {
-    console.log(id);
+    console.log(id,wordToId);
   }
 },50000);
