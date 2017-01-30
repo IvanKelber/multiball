@@ -71,7 +71,6 @@ function onSocketDisconnect() {
 
 function onNewPlayer(data) {
   //add new player to remote players list
-  canvas.width = 100;
   remotePlayers[data.id] = new Player(data.x,data.y);
   remotePlayers[data.id].id = data.id;
 }
