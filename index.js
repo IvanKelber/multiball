@@ -73,10 +73,10 @@ function onRemovePlayer() {
 }
 
 function onNewController(data) {
-  console.log("ON NEW CONTROLLER", data.client_id);
-  if(data.client_id in players) {
+  console.log("ON NEW CONTROLLER", data.word);
+  if(data.word in wordToId) {
     console.log("client id exists");
-    io.to(data.client_id).emit('new controller',{id:this.conn.id});
+    io.to(wordToId[data.word]).emit('new controller',{id:this.conn.id});
   }
 }
 
