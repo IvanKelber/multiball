@@ -57,8 +57,8 @@ function onRemovePlayer() {
 }
 
 function onNewController(data) {
-  if(data.connectionId in players) {
-    io.sockets.socket(data.connectionId).emit('new controller',{id:this.conn.id});
+  if(data.controller_id in players) {
+    io.sockets.socket(data.controller_id).emit('new controller',{id:this.conn.id});
   }
 }
 
