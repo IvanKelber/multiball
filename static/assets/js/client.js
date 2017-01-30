@@ -35,6 +35,7 @@ function setEventHandlers() {
   socket.on('new player',onNewPlayer);
   socket.on('move player',onMovePlayer);
   socket.on('remove player',onRemovePlayer);
+  socket.on('new controller',onNewController);
 
 }
 
