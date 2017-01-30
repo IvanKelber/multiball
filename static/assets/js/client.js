@@ -8,7 +8,7 @@ var player;
 var keys;
 var remotePlayers = {};
 var connect_word = "";
-var contoller_id;
+var contoller_id = null;
 
 function init() {
   canvas = $('#battleground')[0]
@@ -124,11 +124,10 @@ function draw() {
   clear();
   // console.log("PLAYER:");
   player.draw(ctx,"#aa0000");
-  if(connect_word && !controller_id) {
+  if(connect_word && controller_id === undefined) {
     ctx.font = "30px Arial"
     ctx.fillText(connect_word,10,25);
   }
-  // console.log("REMOTE PLAYERS");
   for (var i in remotePlayers) {
     remotePlayers[i].draw(ctx,"#00aaaa");
   }
