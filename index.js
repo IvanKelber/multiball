@@ -60,15 +60,16 @@ function onMovePlayer(data) {
 }
 
 function onRemovePlayer() {
-  var p = players[this.conn.id];
-  if(p) {
+  if(players[this.conn.id]) {
     delete players[this.conn.id];
     this.broadcast.emit('remove player',{id:this.conn.id});
-  }
-  for (word in wordToId) {
-    if (wordToId[word] === this.conn.id) {
-      delete wordToId[word];
+
+    for (word in wordToId) {
+      if (wordToId[word] === this.conn.id) {
+        delete wordToId[word];
+      }
     }
+    this.broadcast.emit('web client disconnect', {id:this.conn.id});
   }
 }
 
