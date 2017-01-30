@@ -92,6 +92,10 @@ function onRemovePlayer(data) {
   }
 }
 
+function onNewController(data) {
+  console.log("New controller: " + data.id);
+}
+
 function animate() {
   update();
   draw();

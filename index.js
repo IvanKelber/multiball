@@ -24,6 +24,7 @@ io.on('connection',function(socket) {
   socket.on('new player',onNewPlayer);
   socket.on('move player',onMovePlayer);
   socket.on('disconnect',onRemovePlayer);
+  socket.on('new controller',onNewController);
 
 });
 
@@ -55,9 +56,10 @@ function onRemovePlayer() {
   }
 }
 
-function onDisconnect() {
-  //remove user from table
-  delete players[this.conn.id];
+function onNewController(data) {
+  if(data.connectionId in players) {
+    io.sockets.socket(data.connectionId).emit('new controller',{id:this.conn.id});
+  }
 }
 
 setInterval(function() {
