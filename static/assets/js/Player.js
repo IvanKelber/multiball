@@ -42,7 +42,7 @@ var Player = function(startX,startY) {
   var draw = function(ctx,color) {
     // console.log(x,y,id);
     ctx.beginPath();
-    ctx.arc(x,y,PLAYER_RADIUS,0,Math.PI * 2)
+    ctx.arc(x,y,SIZE.player_radius,0,Math.PI * 2)
     ctx.fillStyle = color;
     ctx.fill();
   }

@@ -19,6 +19,8 @@ http.listen(port,function() {
 var players = {};
 var wordToId = {};
 
+var controllers = {};
+
 //When a client connects
 io.on('connection',function(socket) {
   socket.emit('init',{id:socket.conn.id});
@@ -61,6 +63,7 @@ function onMovePlayer(data) {
 
 function onRemovePlayer() {
   if(players[this.conn.id]) {
+    //A web client has disconnected
     delete players[this.conn.id];
     this.broadcast.emit('remove player',{id:this.conn.id});
 
@@ -70,6 +73,10 @@ function onRemovePlayer() {
       }
     }
     this.broadcast.emit('web client disconnect', {id:this.conn.id});
+  } else if(controllers[this.conn.id]) {
+    //An android client has disconnected
+    io.to(controllers[this.conn.id]).emit('controller disconnect');
+    delete controllers[this.conn.id];
   }
 }
 
@@ -80,6 +87,7 @@ function onNewController(data) {
     io.to(wordToId[data.word]).emit('new controller',{id:this.conn.id});
     this.emit('web client connected', {id:wordToId[data.word]})
   }
+  controllers[this.conn.id] = wordToId[data.word];
 }
 
 function readFile(file, callback) {

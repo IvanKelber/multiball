@@ -2,7 +2,6 @@
 var socket = io();
 var canvas;
 var ctx;
-var PLAYER_RADIUS = 20;
 var MOVEMENT_SPEED = 4;
 var player;
 var keys;
@@ -100,6 +99,10 @@ function onNewController(data) {
   controller_id = data.id;
 }
 
+function onControllerDisconnect() {
+  controller_id = null;
+}
+
 function onWordDecided(word) {
   console.log(word);
   connect_word = word;
@@ -122,20 +125,20 @@ function update() {
 function draw() {
   clear();
   // console.log("PLAYER:");
-  player.draw(ctx,"#aa0000");
+  player.draw(ctx,COLORS.player);
   if(connect_word && !controller_id) {
     ctx.font = "30px Arial"
-    ctx.fillText(connect_word,10,25);
+    ctx.fillText(connect_word,10,SIZE.player_radius);
   } else {
-    ctx.fillStyle = "#41ff33"
-    ctx.fillText("Connected!",10,25);
+    ctx.fillStyle = COLORS.connected
+    ctx.fillText("Connected!",10,SIZE.player_radius);
   }
   for (var i in remotePlayers) {
-    remotePlayers[i].draw(ctx,"#00aaaa");
+    remotePlayers[i].draw(ctx,COLORS.other);
   }
 }
 
 function clear() {
-  ctx.fillStyle = "gray";
+  ctx.fillStyle = COLORS.background;
   ctx.fillRect(0,0,canvas.width,canvas.height);
 }
