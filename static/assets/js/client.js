@@ -130,7 +130,7 @@ function draw() {
     ctx.font = "30px Arial"
     ctx.fillText(connect_word,10,SIZE.player_radius);
   } else {
-    ctx.fillStyle = COLORS.connected
+    ctx.fillStyle = COLORS.connected;
     ctx.fillText("Connected!",10,SIZE.player_radius);
   }
   for (var i in remotePlayers) {
