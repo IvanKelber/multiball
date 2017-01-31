@@ -78,6 +78,7 @@ function onNewController(data) {
   if(data.word in wordToId) {
     console.log("client id exists");
     io.to(wordToId[data.word]).emit('new controller',{id:this.conn.id});
+    this.emit('web client connected', {id:wordToId[data.word]})
   }
 }
 
