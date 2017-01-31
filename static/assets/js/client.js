@@ -106,6 +106,7 @@ function onControllerDisconnect() {
 }
 
 function onControllerLeft() {
+  console.log("onControllerLeft: ", player.getX());
   player.setX(player.getX() - MOVEMENT_SPEED);
   console.log("onControllerLeft: ", player.getX());
   socket.emit('move player',{x:player.getX(),y:player.getY(),id:player.id})
