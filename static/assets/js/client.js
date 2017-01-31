@@ -37,6 +37,7 @@ function setEventHandlers() {
   socket.on('move player',onMovePlayer);
   socket.on('remove player',onRemovePlayer);
   socket.on('new controller',onNewController);
+  socket.on('controller disconnect',onControllerDisconnect);
   socket.on('word decided',onWordDecided);
 
 }
