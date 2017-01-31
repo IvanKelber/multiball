@@ -52,6 +52,10 @@ function onNewPlayer(data) {
 
 function onMovePlayer(data) {
   var p = players[data.id];
+  // console.log("moving player: " + data);
+  for (var k in data) {
+    console.log(k,data[k]);
+  }
   if(p) {
     p.setX(data.x);
     p.setY(data.y);

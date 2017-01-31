@@ -38,6 +38,7 @@ function setEventHandlers() {
   socket.on('remove player',onRemovePlayer);
   socket.on('new controller',onNewController);
   socket.on('controller disconnect',onControllerDisconnect);
+  socket.on('controller left',onControllerLeft);
   socket.on('word decided',onWordDecided);
 
 }
@@ -59,8 +60,8 @@ function onResize() {
   canvas.height = window.innerHeight;
 }
 
-function onInit(id) {
-  player.id = id;
+function onInit(data) {
+  player.id = data.id;
   socket.emit('new player',{x:player.getX(),y:player.getY()});
 }
 
@@ -82,7 +83,7 @@ function onNewPlayer(data) {
 function onMovePlayer(data) {
   //move player with the appropriate id according to their new location
   if(remotePlayers[data.id]) {
-
+    console.log("moving player: " + data.id);
     remotePlayers[data.id] = new Player(data.x,data.y);
     remotePlayers[data.id].id = data.id;
   }
@@ -104,10 +105,16 @@ function onControllerDisconnect() {
   controller_id = null;
 }
 
+function onControllerLeft() {
+  player.setX(player.getX() - MOVEMENT_SPEED);
+  socket.emit('move player',{x:player.getX(),y:player.getY(),id:player.id})
+}
+
 function onWordDecided(word) {
-  console.log(word);
+  // console.log(word);
   connect_word = word;
 }
+
 
 function animate() {
   update();
@@ -117,7 +124,7 @@ function animate() {
 }
 
 function update() {
-  // console.log(remotePlayers);
+  // console.log("updating:remotePlayers);
   if(player.update(keys)) {
     socket.emit('move player',{x:player.getX(),y:player.getY(),id:player.id})
   };
