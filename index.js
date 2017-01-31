@@ -37,6 +37,7 @@ io.on('connection',function(socket) {
   socket.on('move player',onMovePlayer);
   socket.on('disconnect',onRemovePlayer);
   socket.on('new controller',onNewController);
+  socket.on('controller left',onControllerLeft);
 
 });
 
@@ -92,6 +93,13 @@ function onNewController(data) {
     this.emit('web client connected', {id:wordToId[data.word]})
   }
   controllers[this.conn.id] = wordToId[data.word];
+}
+
+function onControllerLeft() {
+  console.log("controller left");
+  if(this.conn.id in controllers) {
+    io.to(controllers[this.conn.id]).emit('controller left');
+  }
 }
 
 function readFile(file, callback) {
