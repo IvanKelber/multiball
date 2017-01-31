@@ -8,16 +8,16 @@ var Player = function(startX,startY) {
     return x;
   };
 
-  function setX(x) {
-    this.x = x;
+  function setX(newX) {
+    x = newX;
   };
 
   function getY() {
     return y;
   };
 
-  function setY(y) {
-    this.y=y;
+  function setY(newY) {
+    y = newY;
   };
 
   var update = function(keys) {
