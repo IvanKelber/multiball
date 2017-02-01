@@ -45,12 +45,14 @@ function setEventHandlers() {
 }
 
 function onKeyDown(key) {
+  console.log(key);
   if(player) {
     keys.onKeyDown(key);
   };
 }
 
 function onKeyUp(key) {
+  console.log(key);
   if(player) {
     keys.onKeyUp(key);
   }
