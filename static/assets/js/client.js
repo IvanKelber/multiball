@@ -47,15 +47,15 @@ function setEventHandlers() {
 function onKeyDown(key) {
   if(player) {
     keys.onKeyDown(key);
+    console.log("ON KEY DOWN: " + keys)
   };
-  console.log(keys);
 }
 
 function onKeyUp(key) {
   if(player) {
     keys.onKeyUp(key);
+    console.log("ON KEY UP: " + keys);
   }
-  console.log(keys);
 }
 
 function onResize() {

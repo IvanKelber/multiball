@@ -10,7 +10,7 @@ var Keys = function(up, left, right, down) {
 	var onKeyDown = function(e) {
 		var that = this,
 			c = e.keyCode;
-		console.log(e);
+		console.log("keys.onKeyDown: " + e);
 		switch (c) {
 			// Controls
 			case 37: // Left
