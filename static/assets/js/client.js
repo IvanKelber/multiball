@@ -2,7 +2,7 @@
 var socket = io();
 var canvas;
 var ctx;
-var MOVEMENT_SPEED = 4;
+var MOVEMENT_SPEED = 15;
 var player;
 var keys;
 var remotePlayers = {};
@@ -38,7 +38,8 @@ function setEventHandlers() {
   socket.on('remove player',onRemovePlayer);
   socket.on('new controller',onNewController);
   socket.on('controller disconnect',onControllerDisconnect);
-  socket.on('controller left',onControllerLeft);
+  socket.on('controller down',onKeyDown);
+  socket.on('controller up',onKeyUp);
   socket.on('word decided',onWordDecided);
 
 }

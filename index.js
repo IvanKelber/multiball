@@ -37,7 +37,8 @@ io.on('connection',function(socket) {
   socket.on('move player',onMovePlayer);
   socket.on('disconnect',onRemovePlayer);
   socket.on('new controller',onNewController);
-  socket.on('controller left',onControllerLeft);
+  socket.on('key down',onKeyDown);
+  socket.on('key up',onKeyUp);
 
 });
 
@@ -95,10 +96,15 @@ function onNewController(data) {
   controllers[this.conn.id] = wordToId[data.word];
 }
 
-function onControllerLeft() {
-  console.log("controller left");
+function onKeyUp(data) {
   if(this.conn.id in controllers) {
-    io.to(controllers[this.conn.id]).emit('controller left');
+    io.to(controllers[this.conn.id]).emit('controller up',{keyCode:data.keyCode});
+  }
+}
+
+function onKeyDown(data) {
+  if(this.conn.id in controllers) {
+    io.to(controllers[this.conn.id]).emit('controller down',{keyCode:data.keyCode});
   }
 }
 
