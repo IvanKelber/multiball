@@ -2,7 +2,7 @@
 var socket = io();
 var canvas;
 var ctx;
-var MOVEMENT_SPEED = 15;
+var MOVEMENT_SPEED = 4;
 var player;
 var keys;
 var remotePlayers = {};
